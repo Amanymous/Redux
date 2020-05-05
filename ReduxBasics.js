@@ -1,70 +1,50 @@
-// yarn init --yes
-// npm install redux
+const redux =require('redux');
+const createStore=redux.createStore;
 
-// import React from 'react'
-const redux = require("redux");
-const createStore = redux.createStore;
-const combineReducers=redux.combineReducers;
-const Buy_Book = "Buy_Book";
-const Buy_Pen='Buy_Pen';
-const initialStateBooks = {
-  numberOfBooks: 10,
-};
-
-const initialStatePens = {
-  numberOfPens:15,
-};
-
-function buyBook() {
-  return {
-    type: Buy_Book,
-    payload: "first redux code",
-  };
+const intialState={
+    numberOfBooks:10,
+    numberOfPens:15
 }
 
-function buyPen() {
+// action creator: wraping the action in a single function
+function buyBook(){
     return {
-      type: Buy_Pen,
-      payload: "Second redux code",
-    };
-  }
+        type:"Buy_Book",
+        payload:"My First Action"
+    }
+}
 
-const BooksReducer = (state=initialStateBooks,action) => {
-  switch (action.type) {
-      case "Buy_Book":return {
-        ...state,
-        numberOfBooks: state.numberOfBooks+1,
-      };
-      
-    default:
-      return state;
-  }
-};
+function buyPen(){
+    return {
+        type:"Buy_Pen",
+        payload:"My Second Action"
+    }
+}
+// (prevState,action)=>newState
 
-const PensReducer = (state=initialStatePens,action) => {
-  switch (action.type) {
-      
-case "Buy_Pen":return {
-  ...state,
-  numberOfPens:state.numberOfPens*2
-};
-      
-    default:
-      return state;
-  }
-};
-const reducer=combineReducers({
-  Book:BooksReducer,
-  Pen:PensReducer
-})
+const Reducer =(state=intialState,action)=>{
+    switch(action.type){
+        case "Buy_Book":return{
+            ...state,
+            numberOfBooks:state.numberOfBooks-1
+        }
 
-const store = createStore(reducer);
-console.log("Initial state value", store.getState());
-const unsubscribe = store.subscribe(() => {
-  console.log("update state value", store.getState());
-});
+        case "Buy_Pen":return{
+            ...state,
+            numberOfPens:state.numberOfPens-2
+        }
+
+        default: return state;
+    }
+}
+
+const store =createStore(Reducer);
+console.log("Initial State",store.getState());
+const unsubscribe=store.subscribe(()=>{console.log('Updated State Value', store.getState())});
+store.dispatch(buyBook());
+store.dispatch(buyBook());
 store.dispatch(buyBook());
 store.dispatch(buyPen());
-
+store.dispatch(buyPen());
+store.dispatch(buyPen());
 unsubscribe();
-

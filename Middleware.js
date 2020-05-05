@@ -1,8 +1,8 @@
 const redux = require("redux");
 const createStore = redux.createStore;
 const combineReducers=redux.combineReducers;
-const Buy_Book = "Buy_Book";
-const Buy_Pen='Buy_Pen';
+const applyMiddleware =redux.applyMiddleware;
+
 const initialStateBooks = {
   numberOfBooks: 10,
 };
@@ -13,14 +13,14 @@ const initialStatePens = {
 
 function buyBook() {
   return {
-    type: Buy_Book,
+    type: "Buy_Book",
     payload: "first redux code",
   };
 }
 
 function buyPen() {
     return {
-      type: Buy_Pen,
+      type: "Buy_Pen",
       payload: "Second redux code",
     };
   }
@@ -53,8 +53,17 @@ const reducer=combineReducers({
   Book:BooksReducer,
   Pen:PensReducer
 })
+const logger=store=>{
+    return next=>{
+        return action=>{
+            const result=next(action);
+            console.log('middleware log',result);
+            return result;
+        }
+    }
+}
 
-const store = createStore(reducer);
+const store = createStore(reducer,applyMiddleware(logger));
 console.log("Initial state value", store.getState());
 const unsubscribe = store.subscribe(() => {
   console.log("update state value", store.getState());
