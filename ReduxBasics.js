@@ -4,22 +4,19 @@
 // import React from 'react'
 const redux = require("redux");
 const createStore = redux.createStore;
+const combineReducers=redux.combineReducers;
 const Buy_Book = "Buy_Book";
 const Buy_Pen='Buy_Pen';
-const initialState = {
+const initialStateBooks = {
   numberOfBooks: 10,
-  numberOfPens:15,
-  nameOfAuthor: "aman"
 };
-// const action={
-//     type: BuyBook,
-//     info:'first redux code'
-// }
 
-// action creator:wrapping the action in a single fuction 
+const initialStatePens = {
+  numberOfPens:15,
+};
+
 function buyBook() {
   return {
-    //   action
     type: Buy_Book,
     payload: "first redux code",
   };
@@ -27,34 +24,41 @@ function buyBook() {
 
 function buyPen() {
     return {
-      //   action
       type: Buy_Pen,
       payload: "Second redux code",
     };
   }
-// reducer ma 2 cheezain hoti hain
-// (prevState,action)=>newState
 
-const Reducer = (state=initialState,action) => {
+const BooksReducer = (state=initialStateBooks,action) => {
   switch (action.type) {
       case "Buy_Book":return {
         ...state,
-        // jin value ko use nai kiya auko clone karega
         numberOfBooks: state.numberOfBooks+1,
-        // numberOfPens:state.numberOfPens*2
       };
-      case "Buy_Pen":return {
-        ...state,
-        // jin value ko use nai kiya auko clone karega
-        // numberOfBooks: state.numberOfBooks+1,
-        numberOfPens:state.numberOfPens*2
-      };
+      
     default:
       return state;
   }
 };
 
-const store = createStore(Reducer);
+const PensReducer = (state=initialStatePens,action) => {
+  switch (action.type) {
+      
+case "Buy_Pen":return {
+  ...state,
+  numberOfPens:state.numberOfPens*2
+};
+      
+    default:
+      return state;
+  }
+};
+const reducer=combineReducers({
+  Book:BooksReducer,
+  Pen:PensReducer
+})
+
+const store = createStore(reducer);
 console.log("Initial state value", store.getState());
 const unsubscribe = store.subscribe(() => {
   console.log("update state value", store.getState());
@@ -63,3 +67,4 @@ store.dispatch(buyBook());
 store.dispatch(buyPen());
 
 unsubscribe();
+
